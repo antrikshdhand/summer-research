@@ -1,2 +1,3 @@
-# summer-research
-Repository holding code and artefacts from my 2023/24 Summer Research Internship at USYD.
+# 2023/24 Summer Research Internship
+
+This repository holds work related to my current research internship at USYD. My project centres around comparing blackbox grammar inference algorithms.
