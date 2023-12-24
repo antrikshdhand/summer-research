@@ -15,7 +15,7 @@ if len(sys.argv) != 2:
     exit()
 
 in_filepath = sys.argv[1]
-out_filepath = "./bnf_c.txt"
+out_filepath = "./data/bnf_c.txt"
 
 # A list of dictionaries, where each dictionary represents one production
 grammar = []
@@ -23,7 +23,7 @@ grammar = []
 # Open the grammar file and parse in each rule into a dictionary
 f = open(in_filepath, "r")
 for line in f:
-    line_split = line.split(":")
+    line_split = line.split("::=")
     rule_name = line_split[0].strip()
     rules = line_split[1].replace('"', '').strip().split(" | ")
     rules_formatted = []
@@ -52,16 +52,32 @@ if len(production) == 0:
 
 with open(out_filepath, "w") as output_file:
     output_file.write("{\n")
+    output_file.write(f"\t{len(grammar)},\n")
     output_file.write("\t{\n")
-    for production in grammar:
+    for i in range(len(grammar)):
+        production = grammar[i]
         output_file.write("\t\t{\n")
         output_file.write(f'\t\t\t"{production["name"]}",\n')
+        output_file.write(f'\t\t\t{len(production["rules"])},\n')
         output_file.write("\t\t\t{\n")
-        for rule in production['rules']:
+
+        for j in range(len(production['rules'])):
+            rule = production['rules'][j]
             output_file.write("\t\t\t\t{")
+            output_file.write(f"{len(rule)}, ")
             output_file.write(", ".join([f'"{element}"' for element in rule]))
-            output_file.write("}\n")
+            
+            if j != len(production['rules']) - 1:
+                output_file.write("},\n")
+            else:
+                output_file.write("}\n")
+
         output_file.write("\t\t\t}\n")
-        output_file.write("\t\t}\n")
+
+        if i != len(grammar) - 1:
+            output_file.write("\t\t},\n")
+        else:
+            output_file.write("\t\t}\n")
+
     output_file.write("\t}\n")
     output_file.write("}\n")

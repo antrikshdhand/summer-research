@@ -1,0 +1,14 @@
+CC = gcc
+CFLAGS = -g -O1 -fsanitize=address
+TARGET = fuzzer
+
+all: $(TARGET)
+
+$(TARGET): fuzzer.c
+	$(CC) $(CFLAGS) fuzzer.c -o $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(TARGET)

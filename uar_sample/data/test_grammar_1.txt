@@ -1,0 +1,2 @@
+cs61 ::= "cs61 is " emotion
+emotion ::= "awesome" | "terrible"
