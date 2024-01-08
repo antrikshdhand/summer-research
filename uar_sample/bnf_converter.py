@@ -9,15 +9,19 @@ e.g. <digit> : "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: python bnf_converter.py path/to/grammar_file.txt", 
+if len(sys.argv) != 2 and len(sys.argv) != 3:
+    print("Usage: python bnf_converter.py path/to/grammar_file.txt <path/to/output_file.txt>", 
             file=sys.stderr)
     exit()
 
 in_filepath = sys.argv[1]
-out_filepath = "./data/bnf_c.txt"
+if len(sys.argv) == 2:
+    out_filepath = 'data/bnf_c.txt'
+else:
+    out_filepath = sys.argv[2]
 
 # A list of dictionaries, where each dictionary represents one production
+# dict = { "name": "", "rules": []}
 grammar = []
 
 # Open the grammar file and parse in each rule into a dictionary

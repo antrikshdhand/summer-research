@@ -2,14 +2,14 @@
 	2,
 	{
 		{
-			"cs61",
+			"<cs61>",
 			1,
 			{
-				{4, "cs61", "is", "", "emotion"}
+				{4, "cs61", "is", " ", "<emotion>"}
 			}
 		},
 		{
-			"emotion",
+			"<emotion>",
 			2,
 			{
 				{1, "awesome"},

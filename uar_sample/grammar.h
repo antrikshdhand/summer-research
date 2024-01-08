@@ -31,10 +31,10 @@
 #ifndef GRAMMAR_H
 #define GRAMMAR_H 
 
-#define MAX_CHARACTERS_IN_TOKEN 10
-#define MAX_TOKENS_IN_RULE 10
-#define MAX_RULES_FOR_NONTERMINAL 10
-#define MAX_NONTERMINALS_IN_GRAMMAR 10
+#define MAX_CHARACTERS_IN_TOKEN 20
+#define MAX_TOKENS_IN_RULE 20
+#define MAX_RULES_FOR_NONTERMINAL 20
+#define MAX_NONTERMINALS_IN_GRAMMAR 20
 
 typedef struct Token
 {
@@ -111,6 +111,59 @@ const Grammar sample_grammar = {
             {
                 {1, {"0"}}, {1, {"1"}}, {1, {"2"}}, {1, {"3"}}, {1, {"4"}}, 
                 {1, {"5"}}, {1, {"6"}}, {1, {"7"}}, {1, {"8"}}, {1, {"9"}}
+            }
+        }
+    }
+};
+
+Grammar grammar = {
+    6,
+    {
+        {
+            "<start>",
+            1,
+            {
+                {1, "<sentence>"}
+            }
+        },
+        {
+            "<sentence>",
+            1,
+            {
+                {2, "<noun_phrase>", "<verb>"}
+            }
+        },
+        {
+            "<noun_phrase>",
+            1,
+            {
+                {2, "<article>", "<noun>"}
+            }
+        },
+        {
+            "<noun>",
+            3,
+            {
+                {1, "horse"},
+                {1, "dog"},
+                {1, "hamster"}
+            }
+        },
+        {
+            "<article>",
+            2,
+            {
+                {1, "a"},
+                {1, "the"}
+            }
+        },
+        {
+            "<verb>",
+            3,
+            {
+                {1, "stands"},
+                {1, "walks"},
+                {1, "jumps"}
             }
         }
     }

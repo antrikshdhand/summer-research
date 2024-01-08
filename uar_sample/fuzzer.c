@@ -10,7 +10,7 @@
 #include <time.h>
 #include "grammar.h"
 
-#define DEBUG 1
+// #define DEBUG 1
 
 int is_non_terminal(Token key, Grammar grammar);
 TokenArray* unify_key_inv(Token key, Grammar grammar);
@@ -205,32 +205,22 @@ int main()
 {
     srand(time(0));
 
-    Grammar grammar = {
-	2,
-	{
-		{
-			"<cs61>",
-			1,
-			{
-				{2, "cs61 is ", "<emotion>"}
-			}
-		},
-		{
-			"<emotion>",
-			2,
-			{
-				{1, "awesome"},
-				{1, "terrible"}
-			}
-		}
-	}
-    };
- 
+    clock_t start_time, end_time;
+    double cpu_time_used;
 
-    Token start_token = {"<cs61>"};
-    TokenArray* all_strings = unify_key_inv(start_token, grammar);
-    print_token_array(all_strings);
+    start_time = clock();
 
-    free(all_strings);
+    for (int i = 0; i < 10000; i++) 
+    {
+        Token start_token = {"<start>"};
+        TokenArray* all_strings = unify_key_inv(start_token, grammar);
+        // print_token_array(all_strings);
+        free(all_strings);
+    }
 
+    end_time = clock();
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Execution time per run: %f seconds\n", cpu_time_used);
+
+    return 0;
 }

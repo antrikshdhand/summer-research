@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -O1 -fsanitize=address
+CFLAGS = -g -O1 -O3 -fsanitize=address
 TARGET = fuzzer
 
 all: $(TARGET)
