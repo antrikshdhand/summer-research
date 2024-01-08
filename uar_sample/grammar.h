@@ -3,11 +3,11 @@
  * such as:
  * 
  * G = {
- *      <start>     :   <digits>
- *      <digits>    :   <digit> <digits>
- *                  |   <digit>
- *      <digit>     :   "0" | "1" | "2" | "3" | "4" 
- *                  |   "5" | "6" | "7" | "8" | "9"
+ *      <start>     ::=   <digits>
+ *      <digits>    ::=   <digit> <digits>
+ *                    |   <digit>
+ *      <digit>     ::=   "0" | "1" | "2" | "3" | "4" 
+ *                    |   "5" | "6" | "7" | "8" | "9"
  * },
  * 
  * which produces integers of variable length, we want to convert it into some
@@ -66,7 +66,7 @@ typedef struct Grammar
     NonTerminal non_terminals[MAX_NONTERMINALS_IN_GRAMMAR];
 } Grammar;
 
-// Grammar struct
+// Sample grammar struct
 const Grammar sample_grammar = {
     3,
 
@@ -80,12 +80,14 @@ const Grammar sample_grammar = {
             // Number of rules this production has
             1,
 
-            // Array of rules, where each rule consists of an array of Tokens
+            // Array of rules
             {
                 // Rule 1
                 {
                     // Number of tokens this rule has
                     1, 
+
+                    // Array of Tokens
                     {
                         // Token 1
                         "<digits>"
@@ -116,58 +118,9 @@ const Grammar sample_grammar = {
     }
 };
 
-Grammar grammar = {
-    6,
-    {
-        {
-            "<start>",
-            1,
-            {
-                {1, "<sentence>"}
-            }
-        },
-        {
-            "<sentence>",
-            1,
-            {
-                {2, "<noun_phrase>", "<verb>"}
-            }
-        },
-        {
-            "<noun_phrase>",
-            1,
-            {
-                {2, "<article>", "<noun>"}
-            }
-        },
-        {
-            "<noun>",
-            3,
-            {
-                {1, "horse"},
-                {1, "dog"},
-                {1, "hamster"}
-            }
-        },
-        {
-            "<article>",
-            2,
-            {
-                {1, "a"},
-                {1, "the"}
-            }
-        },
-        {
-            "<verb>",
-            3,
-            {
-                {1, "stands"},
-                {1, "walks"},
-                {1, "jumps"}
-            }
-        }
-    }
-};
+int is_non_terminal(Token key, Grammar grammar);
+TokenArray* unify_key_inv(Token key, Grammar grammar);
+TokenArray* unify_rule_inv(Rule rule, Grammar grammar);
 
 /**
  *   Prints out a given `Grammar` struct in Backus-Naur Form.

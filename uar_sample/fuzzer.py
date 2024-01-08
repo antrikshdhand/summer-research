@@ -132,7 +132,7 @@ for i in range(10000):
 
 end_time = time.time()
 execution_time = end_time - start_time
-print(f"Execution time per run: {execution_time} seconds")
+print(f"Execution time (.py): {execution_time} seconds")
 
 
 

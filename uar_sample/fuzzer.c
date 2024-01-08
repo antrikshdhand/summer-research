@@ -12,10 +12,6 @@
 
 // #define DEBUG 1
 
-int is_non_terminal(Token key, Grammar grammar);
-TokenArray* unify_key_inv(Token key, Grammar grammar);
-TokenArray* unify_rule_inv(Rule rule, Grammar grammar);
-
 /**
  *   Checks if a given key exists in the list of non-terminals 
  *   of a given grammar.
@@ -80,7 +76,6 @@ TokenArray* append_token_arrays(TokenArray* src, TokenArray* dest)
 }
 
 /**
- * 
  *   Performs inverse unification on a given key in a grammar.
  *   i.e. The final result is a list of strings representing different possible
  *   combinations of terminal symbols that could be produced from the specified
@@ -88,7 +83,6 @@ TokenArray* append_token_arrays(TokenArray* src, TokenArray* dest)
  * 
  *   @param key: the string which to perform inverse unification on
  *   @param grammar: the Grammar struct representing a BNF grammar
- * 
  */
 TokenArray* unify_key_inv(Token key, Grammar grammar)
 {
@@ -127,6 +121,7 @@ TokenArray* unify_key_inv(Token key, Grammar grammar)
 
         fuzzed_strings = append_token_arrays(strs_from_rand_rule, fuzzed_strings);
 
+        free(strs_from_rand_rule->tokens);
         free(strs_from_rand_rule);
         
         return fuzzed_strings;
@@ -139,7 +134,7 @@ TokenArray* unify_key_inv(Token key, Grammar grammar)
 
         // The only string which a terminal symbol can generate is 
         // the symbol itself.
-        TokenArray* ta = malloc(sizeof(TokenArray));
+        TokenArray* ta = calloc(1, sizeof(TokenArray));
         ta->num_tokens = 1;
         ta->tokens = malloc(1 * sizeof(Token));
         strcpy(ta->tokens[0].string, key.string);
@@ -197,13 +192,67 @@ void print_token_array(TokenArray* ta)
 {
     for (int i = 0; i < ta->num_tokens; i++)
     {
-        printf("%s\n", ta->tokens[i].string);
+        printf("%s", ta->tokens[i].string);
     }
 }
 
 int main() 
 {
+    // Ensures randomness when selecting rule in non-terminal
     srand(time(0));
+
+    Grammar grammar = {
+        6,
+        {
+            {
+                "<start>",
+                1,
+                {
+                    {1, {"<sentence>"}}
+                }
+            },
+            {
+                "<sentence>",
+                1,
+                {
+                    {3, {"<noun_phrase>", " ", "<verb>"}}
+                }
+            },
+            {
+                "<noun_phrase>",
+                1,
+                {
+                    {3, {"<article>", " ", "<noun>"}}
+                }
+            },
+            {
+                "<noun>",
+                3,
+                {
+                    {1, {"horse"}},
+                    {1, {"dog"}},
+                    {1, {"hamster"}}
+                }
+            },
+            {
+                "<article>",
+                2,
+                {
+                    {1, {"a"}},
+                    {1, {"the"}}
+                }
+            },
+            {
+                "<verb>",
+                3,
+                {
+                    {1, {"stands"}},
+                    {1, {"walks"}},
+                    {1, {"jumps"}}
+                }
+            }
+        }
+    };
 
     clock_t start_time, end_time;
     double cpu_time_used;
@@ -214,13 +263,13 @@ int main()
     {
         Token start_token = {"<start>"};
         TokenArray* all_strings = unify_key_inv(start_token, grammar);
-        // print_token_array(all_strings);
+        print_token_array(all_strings);
         free(all_strings);
     }
 
     end_time = clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-    printf("Execution time per run: %f seconds\n", cpu_time_used);
+    printf("Execution time (.c): %f seconds\n", cpu_time_used);
 
     return 0;
 }
