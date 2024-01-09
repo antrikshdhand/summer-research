@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -O1 -O3 -fsanitize=address -lprofiler -L/opt/homebrew/Cellar/gperftools/2.15/lib -I/opt/homebrew/Cellar/gperftools/2.15/include
+CFLAGS = -g -O1 -O3 -fsanitize=address 
 TARGET = fuzzer.o
 
 all: $(TARGET)
