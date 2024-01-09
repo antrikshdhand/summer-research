@@ -105,7 +105,7 @@ int main()
 
         Token start_token = 0x80;
         unify_key_inv(start_token, &sample_grammar, &fuzzed);
-        print_token_array(&fuzzed);
+        // print_token_array(&fuzzed);
     }
 
     end_time = clock();
