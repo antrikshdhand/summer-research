@@ -25,14 +25,6 @@ int is_non_terminal(Token key, Grammar* grammar)
     }
 
     return -1;
-
-    // for (int i = 0; i < grammar->num_non_terminals; i++)
-    // {
-    //     NonTerminal nt = grammar->non_terminals[i];
-    //     if (nt.name == key) {
-    //         return i;
-    //     }
-    // }
 }
 
 void unify_key_inv(Token key, Grammar* grammar, TokenArray* fuzzed)
@@ -96,6 +88,7 @@ void print_token_array(TokenArray* fuzzed)
 
 int main() 
 {
+
     // Ensures randomness when selecting rule in non-terminal
     srand(time(0));
 
@@ -112,11 +105,12 @@ int main()
 
         Token start_token = 0x80;
         unify_key_inv(start_token, &sample_grammar, &fuzzed);
-        // print_token_array(&fuzzed);
+        print_token_array(&fuzzed);
     }
 
     end_time = clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
     printf("Execution time (.c): %f seconds\n", cpu_time_used);
 
+    return 0;
 }

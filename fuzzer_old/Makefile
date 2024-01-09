@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g -O1 -O3 -fsanitize=address
-TARGET = fuzzer
+TARGET = build/fuzzer.o
 
 all: $(TARGET)
 
