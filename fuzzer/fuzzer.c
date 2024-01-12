@@ -3,8 +3,10 @@
 #include <time.h>
 #include "grammar.h"
 
+#include <gperftools/profiler.h>
+
 // #define DEBUG 1
-#define ITERATIONS 10000
+#define ITERATIONS 100000
 
 /**
  * @brief Tests if the given key is a non-terminal by checking if the MSB is
@@ -99,13 +101,14 @@ void print_time_to_file(double cpu_time_used)
 
 int main() 
 {
-
     // Ensures randomness when selecting rule in non-terminal
     srand(time(0));
 
     /* MEASURE ALGORITHM TIME */
     clock_t start_time, end_time;
     double cpu_time_used;
+
+    ProfilerStart("out/profile_output.prof");
 
     start_time = clock();
 
@@ -121,6 +124,8 @@ int main()
 
     end_time = clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+
+    ProfilerStop();
 
     print_time_to_file(cpu_time_used);
 
