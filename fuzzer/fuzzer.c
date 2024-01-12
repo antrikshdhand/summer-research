@@ -86,6 +86,17 @@ void print_token_array(TokenArray* fuzzed)
     }
 }
 
+void print_time_to_file(double cpu_time_used)
+{
+    FILE* filep = fopen("out/c_result.txt", "w");
+    if (!filep) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(filep, "%f", cpu_time_used);
+    fclose(filep);
+}
+
 int main() 
 {
 
@@ -110,7 +121,9 @@ int main()
 
     end_time = clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-    printf("Execution time (.c): %f seconds\n", cpu_time_used);
+
+    print_time_to_file(cpu_time_used);
 
     return 0;
 }
+
