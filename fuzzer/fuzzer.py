@@ -13,8 +13,6 @@ grammar = {
     0x83 : [[0x05], [0x06], [0x07]]
 }
 
-###### SIMPLEST ######
-
 # Performs inverse unification on a given key in a grammar.
 # i.e. The final result is a list of strings representing different possible 
 # combinations of terminal symbols that could be produced from the specified 
@@ -46,8 +44,10 @@ for i in range(ITERATIONS):
 
 end_time = time.time()
 execution_time = end_time - start_time
-print(f"Execution time (.py): {execution_time} seconds")
 
+f = open("out/py_result.txt", "w")
+f.write(str(execution_time))
+f.close()
 
 
 
