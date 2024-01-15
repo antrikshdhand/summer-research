@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <stddef.h>
 
 #ifndef GRAMMAR_H
 #define GRAMMAR_H

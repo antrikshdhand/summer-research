@@ -1,9 +1,6 @@
 # Taken from https://rahul.gopinath.org/post/2019/05/28/simplefuzzer-01/
 # "The simplest grammar fuzzer in the world"
 
-import random
-import time
-
 grammar = {
     0x80 : [[0x81]],
     0x81 : [[0x82, 0x83]],
@@ -21,7 +18,7 @@ def unify_key_inv(grammar, key):
     if ((key & 0x80) == 0x80):
         # We have not reached a terminal symbol yet.
         # Pick a random production associated with the key and repeat.
-        return unify_rule_inv(grammar, random.choice(grammar[key]))
+        return unify_rule_inv(grammar, grammar[key][0])
     else:
         # If the key is not in the grammar, it must be a terminal symbol.
         # The only string which a terminal symbol can generate is 
@@ -36,20 +33,6 @@ def unify_rule_inv(grammar, rule):
     # Flatten the list of lists.
     return sum(ls, [])
 
-ITERATIONS = 10000
-start_time = time.time()
-
+ITERATIONS = 1
 for i in range(ITERATIONS):
-    unify_key_inv(grammar, 0x80)
-
-end_time = time.time()
-execution_time = end_time - start_time
-
-f = open("out/py_result.txt", "w")
-f.write(str(ITERATIONS) + "\n")
-f.write(str(execution_time))
-f.close()
-
-
-
-
+    print(unify_key_inv(grammar, 0x80));

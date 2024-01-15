@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O3 -O1
+CFLAGS = -O3 # -Wall -Wextra -g
 SOURCE_C = src/fuzzer.c
 EXECUTABLE_C = out/fuzzer_c.o
 PYTHON_SCRIPT = src/fuzzer.py
@@ -10,7 +10,7 @@ all: compare
 
 compare: compile_c run_c run_python 
 
-c: compile_c 
+c: compile_c run_c
 
 py: run_python
 
