@@ -3,10 +3,8 @@
 #include <time.h>
 #include "grammar.h"
 
-#include <gperftools/profiler.h>
-
 // #define DEBUG 1
-#define ITERATIONS 100000
+#define ITERATIONS 10000
 
 /**
  * @brief Tests if the given key is a non-terminal by checking if the MSB is
@@ -17,7 +15,7 @@
  * @param grammar The grammar struct representing a BNF grammar.
  * @return int The index of the non-terminal inside the grammar, otherwise -1.
  */
-int is_non_terminal(Token key, Grammar* grammar) 
+int is_non_terminal(Token key) 
 {
     // Check if MSB is set.
     if ((key & 0x80) == 0x80) {
@@ -36,7 +34,7 @@ void unify_key_inv(Token key, Grammar* grammar, TokenArray* fuzzed)
     #endif
 
     size_t nt_index;
-    if ((nt_index = is_non_terminal(key, grammar)) != -1)
+    if ((nt_index = is_non_terminal(key)) != -1)
     {
         // Get the non-terminal related to the given key.
         NonTerminal nt = grammar->non_terminals[nt_index];
@@ -73,7 +71,7 @@ void unify_rule_inv(Rule rule, Grammar* grammar, TokenArray* fuzzed)
     // For each token of the given rule, generate some terminal strings 
     // by running `unify_key_inv` on it.
 
-    for (int i = 0; i < rule.num_tokens; i++)
+    for (size_t i = 0; i < rule.num_tokens; i++)
     {
         Token token = rule.tokens[i];
         unify_key_inv(token, grammar, fuzzed);
@@ -82,19 +80,20 @@ void unify_rule_inv(Rule rule, Grammar* grammar, TokenArray* fuzzed)
 
 void print_token_array(TokenArray* fuzzed) 
 {
-    for (int i = 0; i < fuzzed->index; i++)
+    for (size_t i = 0; i < fuzzed->index; i++)
     {
         printf("0x%x\n", fuzzed->tokens[i]);
     }
 }
 
-void print_time_to_file(double cpu_time_used)
+void print_time_to_file(double cpu_time_used, int iterations)
 {
     FILE* filep = fopen("out/c_result.txt", "w");
     if (!filep) {
         perror("Error opening file");
         exit(EXIT_FAILURE);
     }
+    fprintf(filep, "%d\n", iterations);
     fprintf(filep, "%f", cpu_time_used);
     fclose(filep);
 }
@@ -107,8 +106,6 @@ int main()
     /* MEASURE ALGORITHM TIME */
     clock_t start_time, end_time;
     double cpu_time_used;
-
-    ProfilerStart("out/profile_output.prof");
 
     start_time = clock();
 
@@ -125,9 +122,7 @@ int main()
     end_time = clock();
     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
 
-    ProfilerStop();
-
-    print_time_to_file(cpu_time_used);
+    print_time_to_file(cpu_time_used, ITERATIONS);
 
     return 0;
 }

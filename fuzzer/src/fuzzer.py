@@ -46,6 +46,7 @@ end_time = time.time()
 execution_time = end_time - start_time
 
 f = open("out/py_result.txt", "w")
+f.write(str(ITERATIONS) + "\n")
 f.write(str(execution_time))
 f.close()
 
