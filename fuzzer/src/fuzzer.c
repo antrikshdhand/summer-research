@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "grammar.h"
 
 /**
@@ -26,12 +27,24 @@ void unify_key_inv(Token key, Grammar* grammar, TokenArray* fuzzed)
     size_t nt_index;
     if ((nt_index = is_non_terminal(key)) != -1)
     {
-        // Pick a random rule associated with the non-terminal.
-        size_t rand_rule_index = 0; // rand() % nt.num_rules;
-        Rule rand_rule = grammar->non_terminals[nt_index].rules[rand_rule_index];
+        /*              EQUIVALENT CODE             */
+        // // Get the non-terminal related to the given key.
+        // NonTerminal nt = grammar->non_terminals[nt_index];
 
-        // Generate some Tokens from that Rule.
-        unify_rule_inv(rand_rule, grammar, fuzzed);
+        // // Pick a random rule associated with the non-terminal.
+        // size_t rand_rule_index = rand() % nt.num_rules;
+        // Rule rand_rule = nt.rules[rand_rule_index];
+
+        // // Generate some Tokens from that Rule.
+        // unify_rule_inv(rand_rule, grammar, fuzzed);
+
+        unify_rule_inv(
+            grammar->non_terminals[nt_index].rules[
+                rand() % grammar->non_terminals[nt_index].num_rules
+            ],
+            grammar,
+            fuzzed
+        );
     }
     else
     {
@@ -48,8 +61,7 @@ void unify_rule_inv(Rule rule, Grammar* grammar, TokenArray* fuzzed)
     // by running `unify_key_inv` on it.
     for (size_t i = 0; i < rule.num_tokens; i++)
     {
-        Token token = rule.tokens[i];
-        unify_key_inv(token, grammar, fuzzed);
+        unify_key_inv(rule.tokens[i], grammar, fuzzed);
     }
 }
 
@@ -57,13 +69,11 @@ void print_token_array(TokenArray* fuzzed)
 {
     for (size_t i = 0; i < fuzzed->index; i++)
     {
-        // include <stdio.h>
         printf("0x%x\n", fuzzed->tokens[i]);
     }
 }
 
-#define ITERATIONS 1
-
+#define ITERATIONS 100000
 int main() 
 {
     for (int i = 0; i < ITERATIONS; i++)
@@ -71,9 +81,8 @@ int main()
         TokenArray fuzzed;
         fuzzed.index = 0;
 
-        Token start_token = 0x80;
-        unify_key_inv(start_token, &sample_grammar, &fuzzed);
-        print_token_array(&fuzzed);
+        unify_key_inv(0x80, &sample_grammar, &fuzzed);
+        // print_token_array(&fuzzed);
     }
     return 0;
 }
