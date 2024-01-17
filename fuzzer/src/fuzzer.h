@@ -29,11 +29,6 @@
 
 typedef uint8_t Token;
 
-typedef struct TokenArray {
-    size_t index;
-    Token tokens[MAX_STRINGS_IN_LANGUAGE];
-} TokenArray;
-
 typedef struct Rule
 {
     size_t num_tokens;
@@ -52,6 +47,11 @@ typedef struct Grammar
     size_t num_non_terminals;
     NonTerminal non_terminals[MAX_NONTERMINALS_IN_GRAMMAR];
 } Grammar;
+
+typedef struct TokenArray {
+    size_t index;
+    Token tokens[MAX_STRINGS_IN_LANGUAGE];
+} TokenArray;
 
 // Note that the NonTerminals are listed in ascending order. This is important
 // to allow for O(1) lookup of index in the fuzzing algorithm.

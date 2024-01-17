@@ -10,16 +10,16 @@ Taken from https://rahul.gopinath.org/post/2019/05/28/simplefuzzer-01/
 ################################
 
 GRAMMAR = {
-    0x80 : [[0x81]],
-    0x81 : [[0x82, 0x83]],
-    0x82 : [[0x84, 0x85]],
-    0x85 : [[0x00], [0x01], [0x02]],
-    0x84 : [[0x03], [0x04]],
-    0x83 : [[0x05], [0x06], [0x07]]
+    "<start>": [["<sentence>"]],
+    "<sentence>": [["<noun_phrase>", "<verb>"]],
+    "<noun_phrase>": [["<article>", "<noun>"]],
+    "<noun>": [["horse"], ["dog"], ["hamster"]],
+    "<article>": [["a"], ["the"]],
+    "<verb>": [["stands"], ["walks"], ["jumps"]]
 }
 
-START_TOKEN = 0x80
-TO_PRINT = False
+START_TOKEN = "<start>"
+TO_PRINT = True
 ITERATIONS = 1
 
 ###############################
@@ -31,7 +31,7 @@ import random
 # combinations of terminal symbols that could be produced from the specified 
 # non-terminal key in the grammar.
 def unify_key_inv(grammar, key):
-    if ((key & 0x80) == 0x80):
+    if key in grammar:
         # We have not reached a terminal symbol yet.
         # Pick a random production associated with the key and repeat.
         return unify_rule_inv(grammar, random.choice(grammar[key]))
@@ -51,4 +51,4 @@ for i in range(ITERATIONS):
     if (TO_PRINT):
         print(unify_key_inv(GRAMMAR, START_TOKEN))
     else:
-        unify_key_inv(GRAMMAR, 0x80)
+        unify_key_inv(GRAMMAR, START_TOKEN)
