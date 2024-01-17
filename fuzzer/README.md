@@ -1,6 +1,6 @@
 # The world's simplest grammar fuzzer
 
-This repository holds the code for the C implementation of [the simplest grammar fuzzer in the world](https://rahul.gopinath.org/post/2019/05/28/simplefuzzer-01/) originally written by [Dr Rahul Gopinath](https://www.sydney.edu.au/engineering/about/our-people/academic-staff/rahul-gopinath.html). The program generates random strings from a given grammar.
+This repository holds code for the C implementation of [The simplest grammar fuzzer in the world](https://rahul.gopinath.org/post/2019/05/28/simplefuzzer-01/), originally written by [Dr Rahul Gopinath](https://www.sydney.edu.au/engineering/about/our-people/academic-staff/rahul-gopinath.html). The program generates random strings from a given grammar.
 
 ## Table of Contents
 
@@ -38,7 +38,7 @@ These commands should all work out-of-the-box with the sample grammar provided.
 The program is reliant on a few parameters to run – these are all declared at the top of the `fuzzer.h` and `fuzzer.py` files.
 
 1. `GRAMMAR`: the grammar you want to generate strings from 
-2. `START_TOKEN`: the first non-terminal in the grammar (usually equivalent to '\<start\>' or '\<grammar\>' in BNF form)
+2. `START_TOKEN`: the first non-terminal in the grammar (usually called '\<start\>' or '\<grammar\>')
 2. `TO_PRINT`: whether you want to print the fuzzed strings to the terminal or not
     - Python: toggle between `True` and `False`
     - C: comment and uncomment the preprocessor directive
@@ -52,7 +52,7 @@ Refer to [Importing your grammar](#importing-your-grammar) for more details on h
 
 ### The 8-bit representation used in C
 
-In order to optimise the code as much as possible, we don't work with strings in the C implementation of the fuzzer. Instead, we map each token in the grammar to an 8-bit number and then generate random "strings" from these bytes. This mapping allows us to see some smart optimisations such as O(1) checking if a token is non-terminal or not, and O(1) time index lookup. 
+In order to optimise the code as much as possible, we don't work with strings in the C implementation of the fuzzer. Instead, we map each token in the grammar to an 8-bit number and then generate random "strings" from these bytes. This mapping allows us to see some smart optimisations such as checking if a token is non-terminal or not in O(1) time, and O(1) time index lookup. 
 
 The mapping is simple: nonterminals are assigned 8-bit keys starting from `0x80`, and terminals are assigned 8-bit keys starting from `0x00`. That is, _if the MSB of the key is set, the token is a non-terminal._ 
 
@@ -82,7 +82,6 @@ Suppose you have a BNF grammar you wish to work with:
 <article> ::= "a" | "the"
 <verb> ::= "stands" | "walks" | "jumps"
 ```
-<div style="text-align: center"><a href="./data/test_grammar.txt">./data/test_grammar.txt</a></div><br>
 
 This project requires that you have this grammar converted into JSON format:
 
@@ -96,7 +95,6 @@ This project requires that you have this grammar converted into JSON format:
     "<verb>": [["stands"], ["walks"], ["jumps"]]
 }
 ```
-<div style="text-align: center"><a href="./data/test_grammar.txt">./data/test_grammar.json</a></div>
 
 ### Importing your grammar
 
@@ -174,7 +172,7 @@ Grammar GRAMMAR = {
 		},
 		...
 ```
-Hence we have developed a JSON-to-C converter which takes in a JSON grammar file as a command-line argument and outputs the C initialisation code of the grammar in the above format.
+To this end we have developed a JSON-to-C converter which takes in a JSON grammar file as a command-line argument and outputs the C initialisation code of the grammar in the above format.
 
 From the `./fuzzer` directory, execute the Python script:
 ```bash
@@ -190,7 +188,7 @@ Notes:
 
 ### Running your fuzzer
 
-After you have imported your grammar into both the Python and C programs, you are now able to run all of the Makefile rules explained in the [Getting started](#getting-started) section.
+After you have imported your grammar into both the Python and C programs, you should now be able to run all of the Makefile rules explained in the [Getting started](#getting-started) section with your own grammar!
 
 ## Contact
 
