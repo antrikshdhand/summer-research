@@ -1,6 +1,0 @@
-<commandline> ::= <list> |  <list> ";" |  <list> "&"
-<list>     ::=  <conditional> |   <list> ";" <conditional> |   <list> "&" <conditional>
-<conditional> ::=  <pipeline> |   <conditional> "&&" <pipeline>
-<pipeline> ::=  <command> |  <pipeline> "|" <command>
-<command>  ::=  <word> |  <command> <word>
-<word> ::= "man" | "cd" | "ls" | "mkdir" | "echo"
