@@ -1,27 +1,27 @@
 CC = gcc
-CFLAGS = -O3 # -Wall -Wextra -g
+CFLAGS = -O3
 SOURCE_C = src/fuzzer.c
 EXECUTABLE_C = out/fuzzer_c.o
 PYTHON_SCRIPT = src/fuzzer.py
+C_RESULT = out/c_result.txt
+PY_RESULT = out/py_result.txt
 
-.PHONY: all c py clean
+compare: run_c_with_output run_py_with_output
 
-all: compare
+crun: 
+	$(EXECUTABLE_C)
 
-compare: compile_c run_c run_python 
+ccomp: 
+	$(CC) $(CFLAGS) $(SOURCE_C) -o $(EXECUTABLE_C)
 
-c: compile_c run_c
-
-py: run_python
+py: 
+	python3 $(PYTHON_SCRIPT)
 
 clean:
 	rm -rf out/*
 
-compile_c:
-	$(CC) $(CFLAGS) $(SOURCE_C) -o $(EXECUTABLE_C)
+run_c_with_output:
+	{ time $(EXECUTABLE_C) ; } 2> ./out/c_result.txt
 
-run_python:
-	python3 $(PYTHON_SCRIPT)
-
-run_c:
-	$(EXECUTABLE_C)
+run_py_with_output:
+	{ time python3 $(PYTHON_SCRIPT) ; } 2> ./out/py_result.txt
