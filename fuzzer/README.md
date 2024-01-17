@@ -11,6 +11,7 @@ This repository holds code for the C implementation of [The simplest grammar fuz
 - [Usage](#usage) 
     - [Importing your grammar](#importing-your-grammar)
     - [Running your fuzzer](#running-your-fuzzer)
+- [Contact](#contact)
 
 ## Getting started
 
@@ -137,40 +138,44 @@ Grammar GRAMMAR = {
     6,
 
     // Array of NonTerminals
-	{
+    {
         // NonTerminal 1
-		{
+        {
             // Name of NonTerminal
-			0x80,
-   
+            0x80,
+    
             // Number of rules NonTerminal has
-			1,
+            1,
 
             // Array of Rules
-			{
+            {
                 // Rule 1
-				{
+                {
                     // Number of Tokens in Rule
-					1,
+                    1,
 
                     // Array of Tokens
-					{0x81}
-				}
-			}
-		},
+                    {0x81}
+                }
+            }
+        },
 
         // NonTerminal 2
-		{
-			0x81,
-			1,
-			{
-				{
-					2,
-					{0x82, 0x83}
-				}
-			}
-		},
-		...
+        {
+            0x81,
+            1,
+            {
+                {
+                    2,
+                    {0x82, 0x83}
+                }
+            }
+        },
+        
+        ...
+        
+    }
+};
 ```
 To this end we have developed a JSON-to-C converter which takes in a JSON grammar file as a command-line argument and outputs the C initialisation code of the grammar in the above format.
 
