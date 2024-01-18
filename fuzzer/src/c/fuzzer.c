@@ -1,4 +1,6 @@
+#include "grammar.h"
 #include "fuzzer.h"
+#include <stdio.h>
 
 int is_non_terminal(Token key) 
 {
@@ -45,21 +47,4 @@ void print_token_array(TokenArray* fuzzed)
         printf("0x%x ", fuzzed->tokens[i]);
     }
     printf("\n");
-}
-
-int main() 
-{
-    for (int i = 0; i < ITERATIONS; i++)
-    {
-        TokenArray fuzzed;
-        fuzzed.index = 0;
-
-        unify_key_inv(START_TOKEN, &GRAMMAR, &fuzzed);
-
-        #ifdef TO_PRINT
-        print_token_array(&fuzzed);
-        #endif
-    }
-
-    return 0;
 }

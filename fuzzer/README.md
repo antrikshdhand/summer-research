@@ -20,9 +20,9 @@ This program follows the C99 standard, and the project uses [`gcc`](https://gcc.
 Once you have cloned the repository locally and navigated to the `./fuzzer` directory in your terminal, the included Makefile has several rules for you to use:
 
 1. `make clean`: remove all output files produced in `./out` 
-2. `make ccomp`: compiles the `fuzzer.c` code
-3. `make crun`: runs the `fuzzer_c.o` code
-4. `make py`: runs the `fuzzer.py` script
+2. `make ccomp`: compiles the C code
+3. `make crun`: runs the C code
+4. `make py`: runs the Python script
 5. `make compare`: 
     - `make crun` (does not recompile the `.c` code)
     - `make py` 
@@ -36,7 +36,7 @@ These commands should all work out-of-the-box with the sample grammar provided.
 
 ### Parameters
 
-The program is reliant on a few parameters to run – these are all declared at the top of the `fuzzer.h` and `fuzzer.py` files.
+The program is reliant on a few parameters to run:
 
 1. `GRAMMAR`: the grammar you want to generate strings from 
 2. `START_TOKEN`: the first non-terminal in the grammar (usually called '\<start\>' or '\<grammar\>')
@@ -45,7 +45,7 @@ The program is reliant on a few parameters to run – these are all declared at 
     - C: comment and uncomment the preprocessor directive
 3. `ITERATIONS`: the number of program iterations you want to run
 
-These are the only parameters you have to change.
+These are the only parameters you have to change. For Python, all of these are located at the top of the `fuzzer.py` file. For C, the `GRAMMAR` is located in `main.c` and the rest are at the top of `fuzzer.h`.
 
 For example, if you want to run the fuzzer normally and generate fuzzed strings to the terminal, you would set `TO_PRINT` to `True` and set `ITERATIONS` to `1`. If you want to compare the speed of the Python and C programs, you would set `TO_PRINT` to `False` and `ITERATIONS` to a large number like `100000`, followed by running `make ccomp && make compare`.
 
@@ -63,8 +63,6 @@ We also store and assign keys to all non-terminals in the order they appear in t
 <term> ::= <factor> "*" <factor>
 <factor> ::= "0" | "1" | "2" | ... | "9"
 ```
-
-
 the first non-terminal is `<expression>` and so it would receive the key `0x80`. The second is `<term>` which would receive the key `0x81`, and finally `<factor>` would receive the key `0x82`. We would also store the grammar as such:
 ```
 GRAMMAR = [<NT-struct for 0x80>, <NT-struct for 0x81>, <NT-struct for 0x82>]
@@ -184,7 +182,7 @@ From the `./fuzzer` directory, execute the Python script:
 python3 ./src/converter.py <path_to_json_grammar_file>
 ```
 
-Replace the contents of `GRAMMAR` in `fuzzer.h` with the outputted code found in `./data/grammar_c_8bit.txt`.
+Replace the contents of `GRAMMAR` in `main.c` with the outputted code found in `./data/grammar_c_8bit.txt`.
 
 Notes:
 - `converter.py` outputs the C initialisation code as well as a lookup table `grammar_lookup.txt` which shows you the keys for every token in the grammar.

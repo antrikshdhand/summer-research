@@ -1,18 +1,21 @@
 CC = gcc
-CFLAGS = -O3
-SOURCE_C = src/fuzzer.c
-EXECUTABLE_C = out/fuzzer_c.o
+CFLAGS = -O3 
+EXECUTABLE_C = out/simplest_fuzzer.o
 PYTHON_SCRIPT = src/fuzzer.py
-C_RESULT = out/c_time.txt
-PY_RESULT = out/py_time.txt
+
+.PHONY: default ccomp py run_c_with_output run_py_with_output clean
+
+default: ; # Options: make ccomp, make crun, make py, make compare
 
 compare: run_c_with_output run_py_with_output
 
-crun: 
+crun:
 	$(EXECUTABLE_C)
 
 ccomp: 
-	$(CC) $(CFLAGS) $(SOURCE_C) -o $(EXECUTABLE_C)
+	$(CC) $(CFLAGS) -c ./src/c/fuzzer.c -o ./out/fuzzer.o
+	$(CC) $(CFLAGS) -c ./src/c/main.c -o ./out/main.o
+	$(CC) $(CFLAGS) ./out/main.o ./out/fuzzer.o -o ./out/simplest_fuzzer.o
 
 py: 
 	python3 $(PYTHON_SCRIPT)
@@ -21,7 +24,7 @@ clean:
 	rm -rf out/*
 
 run_c_with_output:
-	{ time $(EXECUTABLE_C) ; } 2> ./out/c_result.txt
+	{ time $(EXECUTABLE_C) ; } 2> ./out/c_time.txt
 
 run_py_with_output:
-	{ time python3 $(PYTHON_SCRIPT) ; } 2> ./out/py_result.txt
+	{ time python3 $(PYTHON_SCRIPT) ; } 2> ./out/py_time.txt
