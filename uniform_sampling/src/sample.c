@@ -11,11 +11,9 @@
  * from those indices.
  */
 
-#include "../../fuzzer/src/c/grammar.h"
-#include "hash_table.h"
-#include <limits.h>
+#include "sample.h"
 
-#define EMPTY_TOKEN 0x88
+HashTable table;
 
 Grammar GRAMMAR = {
 	6,
@@ -119,11 +117,6 @@ Grammar GRAMMAR = {
 		}
 	}
 };
-
-HashTable table;
-
-int key_get_num_strings(Token token, Grammar* grammar, size_t l_str);
-int rule_get_num_strings(Rule rule, Grammar* grammar, size_t l_str);
 
 /**
  * @brief Counts the number of strings of a given size `l_str` which can be
