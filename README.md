@@ -9,18 +9,23 @@ summer-research/
 │   │   ├── test_grammar.txt
 │   │   └── test_grammar.json
 │   ├── out/
-│   │   └── fuzzer_c.o  
 │   ├── src/
+│   │   ├── c/
+│   │   │   ├── fuzzer.c
+│   │   │   ├── fuzzer.h
+│   │   │   ├── grammar.h
+│   │   │   └── main.c 
 │   │   ├── converter.py
-│   │   ├── fuzzer.c
-│   │   ├── fuzzer.h
 │   │   └── fuzzer.py
 │   ├── Makefile
 │   └── README.md
 ├── uniform_sampling/
-│   ├── hash_table.c
-│   ├── sample.c
-│   └── sample.h
+│   ├── out/
+│   └── src/
+│       ├── hash_table.c
+│       ├── hash_table.h
+│       ├── sample.c
+│       └── sample.h
 ├── .gitignore
 └── README.md
 ```

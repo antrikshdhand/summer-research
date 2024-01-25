@@ -1,6 +1,8 @@
 #ifndef FUZZER_H 
 #define FUZZER_H 
 
+#include "grammar.h"
+
 /**
  * @brief Performs inverse unification on a given key in a grammar. 
  * 
@@ -33,6 +35,5 @@ void unify_key_inv(Token key, Grammar* grammar, TokenArray* fuzzed);
  * @param fuzzed A previously allocated array in which to store all fuzzed strings.
  */
 void unify_rule_inv(Rule rule, Grammar* grammar, TokenArray* fuzzed);
-
 
 #endif

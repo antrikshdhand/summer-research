@@ -7,7 +7,7 @@ Grammar GRAMMAR = {
 			1,
 			{
 				{
-					// "<sentence>"
+					// <sentence>
 					1,
 					{0x81}
 				}
@@ -19,7 +19,7 @@ Grammar GRAMMAR = {
 			1,
 			{
 				{
-					// "<noun_phrase>", "<verb>"
+					// <noun_phrase>, <verb>
 					2,
 					{0x82, 0x83}
 				}
@@ -31,48 +31,9 @@ Grammar GRAMMAR = {
 			1,
 			{
 				{
-					// "<article>", "<noun>"
+					// <article>, <noun>
 					2,
 					{0x84, 0x85}
-				}
-			}
-		},
-		{
-			// <noun>
-			0x85,
-			3,
-			{
-				{
-					// "horse"
-					1,
-					{0x0}
-				},
-				{
-					// "dog"
-					1,
-					{0x1}
-				},
-				{
-					// "hamster"
-					1,
-					{0x2}
-				}
-			}
-		},
-		{
-			// <article>
-			0x84,
-			2,
-			{
-				{
-					// "a"
-					1,
-					{0x3}
-				},
-				{
-					// "the"
-					1,
-					{0x4}
 				}
 			}
 		},
@@ -82,19 +43,58 @@ Grammar GRAMMAR = {
 			3,
 			{
 				{
-					// "stands"
+					// stands
 					1,
 					{0x5}
 				},
 				{
-					// "walks"
+					// walks
 					1,
 					{0x6}
 				},
 				{
-					// "jumps"
+					// jumps
 					1,
 					{0x7}
+				}
+			}
+		},
+		{
+			// <article>
+			0x84,
+			2,
+			{
+				{
+					// a
+					1,
+					{0x3}
+				},
+				{
+					// the
+					1,
+					{0x4}
+				}
+			}
+		},
+		{
+			// <noun>
+			0x85,
+			3,
+			{
+				{
+					// horse
+					1,
+					{0x0}
+				},
+				{
+					// dog
+					1,
+					{0x1}
+				},
+				{
+					// hamster
+					1,
+					{0x2}
 				}
 			}
 		}

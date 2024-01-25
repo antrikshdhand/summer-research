@@ -44,7 +44,7 @@ def create_lookup_table(grammar) -> dict:
                     ordered_nonterminals.append(token)
                 else:
                     ordered_terminals.append(token)
-
+    
     # Assign an 8-bit key to each token in order
     # i.e.  non-terminal 1 will be assigned 0x80
     #       non-terminal 2 will be assigned 0x81
@@ -55,16 +55,16 @@ def create_lookup_table(grammar) -> dict:
     key_t = 0x00
     for non_terminal in ordered_nonterminals:
         lookup[non_terminal] = key_nt
-        key_nt += 1
+        key_nt += 0x01
     for terminal in ordered_terminals:
         lookup[terminal] = key_t
-        key_t += 1
+        key_t += 0x01
     
     with open("./data/grammar_lookup.txt", "w") as f:
         for key, val in lookup.items():
             f.write(f"{key}: {hex(val)}\n")
     
-    return lookup
+    return lookup, ordered_nonterminals, ordered_terminals
 
 def is_nonterminal(token: str) -> bool:
     '''
@@ -77,10 +77,10 @@ def is_nonterminal(token: str) -> bool:
     return (token[0], token[-1]) == ('<', '>')
 
 def export_grammar(grammar: dict, to_string: bool) -> None:
+    lookup, ordered_nt, ordered_t = create_lookup_table(grammar)
     if to_string:
         f = open("./data/grammar_c_str.txt", "w")
     else:
-        lookup = create_lookup_table(grammar)
         f = open("./data/grammar_c_8bit.txt", "w")
 
     # Main Grammar {}
@@ -94,7 +94,7 @@ def export_grammar(grammar: dict, to_string: bool) -> None:
     f.write("\t")
     f.write("{\n")
 
-    for i, (nonterminal, v) in enumerate(grammar.items()):
+    for i, nonterminal in enumerate(ordered_nt):
         # NonTerminal {}
         f.write("\t\t")
         f.write("{\n")
@@ -128,7 +128,7 @@ def export_grammar(grammar: dict, to_string: bool) -> None:
                 f.write("// ")
                 for k in range(len(rule)):
                     token = rule[k]
-                    f.write(f'"{token}"')
+                    f.write(f'{token}')
                     if k != len(rule) - 1:
                         f.write(", ")
                     else:

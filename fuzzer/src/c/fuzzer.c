@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "grammar.h"
 #include "fuzzer.h"
-#include <stdio.h>
 
 int is_non_terminal(Token key) 
 {
