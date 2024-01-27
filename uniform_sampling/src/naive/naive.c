@@ -1,4 +1,10 @@
-#include "sample.h"
+#include "naive.h"
+#include "hash_table.h"
+
+#define EMPTY_TOKEN 0x88
+
+int key_get_num_strings(Token token, Grammar* grammar, size_t l_str);
+int rule_get_num_strings(Rule rule, Grammar* grammar, size_t l_str);
 
 HashTable table;
 
@@ -176,14 +182,14 @@ int rule_get_num_strings(Rule rule, Grammar* grammar, size_t l_str)
     }
     if (head == EMPTY_TOKEN) return 0;
 
-    Rule rule_copy = rule;
-    rule_copy.tokens[head_index] = EMPTY_TOKEN;
-
     // If the head is the last token in the array, then there is no tail.
     if (head_index == rule.num_tokens - 1)
     {
         return key_get_num_strings(head, grammar, l_str);
     }
+
+    Rule rule_copy = rule;
+    rule_copy.tokens[head_index] = EMPTY_TOKEN;
 
     int sum_rule = 0;
     for (int partition = 1; partition < l_str + 1; partition++)

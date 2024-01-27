@@ -13,6 +13,4 @@ from those indices.
 
 ## Progress
 
-Currently we have implemented the functions `key_get_num_strings()` and `rule_get_num_strings()` to satisfy #1. 
-
-The issue with implementing #2 in C is that working with strings in C naturally calls for dynamic memory allocation. I'm still working on it.
+Currently implemented the functions `key_get_num_strings()` and `rule_get_num_strings()` to satisfy #1. This can be found in the `naive` implementation.

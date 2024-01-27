@@ -9,6 +9,7 @@ summer-research/
 │   │   ├── test_grammar.txt
 │   │   └── test_grammar.json
 │   ├── out/
+│   │   └── fuzzer_c.o  
 │   ├── src/
 │   │   ├── c/
 │   │   │   ├── fuzzer.c
@@ -20,12 +21,17 @@ summer-research/
 │   ├── Makefile
 │   └── README.md
 ├── uniform_sampling/
-│   ├── out/
+│   ├── out
 │   └── src/
-│       ├── hash_table.c
-│       ├── hash_table.h
-│       ├── sample.c
-│       └── sample.h
+│       ├── memoised/
+│       │   ├── key_hash_table.c
+│       │   ├── memoised.c
+│       │   ├── memoised.h
+│       │   └── rule_hash_table.c
+│       └── naive/
+│           ├── hash_table.c
+│           ├── hash_table.h
+│           └── naive.c
 ├── .gitignore
 └── README.md
 ```
