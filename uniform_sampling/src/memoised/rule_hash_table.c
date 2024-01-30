@@ -1,14 +1,14 @@
 #include "memoised.h"
 
-int hash_rule(Rule rule, size_t l_str)
+int hash_rule(Rule* rule, size_t l_str)
 {
-    uint32_t hash = 5381;
+    uint32_t hash = 5382;
 
-    for (size_t i = 0; i < rule.num_tokens; i++)
+    for (size_t i = 0; i < rule->num_tokens; i++)
     {
-        hash = ((hash << 5) + hash) + rule.tokens[i];
+        hash = ((hash << 5) + hash) ^ rule->tokens[i];
     }
-    hash = ((hash << 5) + hash) + (uint32_t)l_str;
+    hash = ((hash << 5) + hash) ^ (uint32_t)l_str;
 
     return hash % RULE_TABLE_SIZE;
 }
@@ -36,7 +36,17 @@ void print_rule_hash_table(RuleHashTable* table)
             printf("\t%zu\t", i);
             RuleNode* tmp = (*table)[i];
             while (tmp != NULL) {
-                printf("(0x%x, l: %lu, c: %d) -> ", tmp->key->token, tmp->l_str, tmp->count);
+                printf("(0x%x, l: %lu, c: %d, tail: [", tmp->key->token, tmp->l_str, tmp->count);
+                
+                // Print the tail linked list
+                RuleNode* tailNode = tmp->tail;
+                while (tailNode != NULL) {
+                    printf("(0x%x, l: %lu, c: %d) -> ", tailNode->key->token, tailNode->l_str, tailNode->count);
+                    tailNode = tailNode->next;
+                }
+                
+                printf("]) -> ");
+                
                 tmp = tmp->next;
             }
             printf("\n");
@@ -45,7 +55,7 @@ void print_rule_hash_table(RuleHashTable* table)
     printf("--------------------------------------------\n");
 }
 
-void insert_rule(RuleHashTable* table, Rule rule, size_t l_str, RuleNode* rn)
+void insert_rule(RuleHashTable* table, Rule* rule, size_t l_str, RuleNode* rn)
 {
     if (rn == NULL) return;
 
@@ -61,23 +71,27 @@ void insert_rule(RuleHashTable* table, Rule rule, size_t l_str, RuleNode* rn)
     (*table)[index] = rn;
 }
 
-int rule_node_equals(RuleNode* rn, Rule* rule, size_t l_str) 
+int rule_node_equals(RuleNode* tmp, Rule* rule, size_t l_str) 
 {
-    // Check for matching keys and string length:
-    if (rn->key->token != rule->tokens[0] || rn->l_str != l_str) 
-    {
-        return 0; // Not equal
-    }
+    if (tmp->key->token != rule->tokens[0])
+        return 0;
+
+    if (tmp->l_str != l_str)
+        return 0;
+
+    if (tmp->tail->key->token != rule->tokens[1])
+        return 0;
+
     return 1;
 }
 
-RuleNode* get_rule(RuleHashTable* table, Rule rule, size_t l_str)
+RuleNode* get_rule(RuleHashTable* table, Rule* rule, size_t l_str)
 {
     int index = hash_rule(rule, l_str);
     RuleNode* tmp = (*table)[index];
     while (tmp != NULL) 
     {
-        if (tmp->l_str == l_str && rule_node_equals(tmp, &rule, l_str)) 
+        if (rule_node_equals(tmp, rule, l_str)) 
         {
             return tmp;
         }
