@@ -227,12 +227,12 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
         return NULL;
     }
     
-    // RuleNode* memoised_result;
-    // if ((memoised_result = get_rule(&rule_strs, rule, l_str)) != NULL)
-    // {
-    //     printf("memoised entry found! returning...\n");
-    //     return memoised_result;
-    // }
+    RuleNode* memoised_result;
+    if ((memoised_result = get_rule(&rule_strs, rule, l_str)) != NULL)
+    {
+        printf("memoised entry found! returning...\n");
+        return memoised_result;
+    }
 
     // The head is the first non-empty token.
     Token head = EMPTY_TOKEN;
@@ -282,7 +282,7 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
 
     // List of RuleNodes
     RuleNode* sum_rule = NULL;
-    for (size_t partition = 1; partition < l_str; partition++)
+    for (size_t partition = 1; partition <= l_str; partition++)
     {
         // printf("partition: %lu\n", partition);
         size_t h_len = partition;
@@ -326,8 +326,30 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
         }
     }
 
-    // Memoize the result
-    // insert_rule(&rule_strs, rule, l_str, sum_rule);
+    // if (sum_rule != NULL) {
+    //     // Print sum_rule
+    //     RuleNode* ptr = sum_rule;
+    //     int i = 0;
+    //     printf("\nPRINTING sum_rule WITH rule->tokens[head_index] = 0x%x, rule->tokens[head_index + 1] = 0x%x\n", rule->tokens[head_index], rule->tokens[head_index + 1]);
+    //     while (ptr != NULL)
+    //     {
+    //         if (ptr->tail == NULL)
+    //         {
+    //             printf("i: %d, count: %d, key->token: 0x%x, key->tail: NULL, l_str: %lu\n", i, ptr->count, ptr->key->token, ptr->l_str);
+    //         }
+    //         else
+    //         {
+    //             printf("i: %d, count: %d, key->token: 0x%x, key->tail->key->token: 0x%x, l_str: %lu\n", i, ptr->count, ptr->key->token, ptr->tail->key->token, ptr->l_str);
+    //         }
+                
+    //         i++;
+    //         ptr = ptr->next;
+    //     }
+    // }
+
+    if (sum_rule != NULL)
+        // Memoize the result
+        insert_rule(&rule_strs, rule, l_str, sum_rule);
 
     return sum_rule;
 }
@@ -342,11 +364,7 @@ int main()
 
     for (size_t l_str = 1; l_str <= 20; l_str++)
     {
-        // printf("******** l_str = %lu ********\n", l_str);
-        KeyNode* key_node = key_get_def(0x82, &GRAMMAR, l_str);
-        // print_key_hash_table(&key_strs);
-        // print_rule_hash_table(&rule_strs);
-        // printf("count = %d\n", key_node->count);
+        KeyNode* key_node = key_get_def(0x81, &GRAMMAR, l_str);
         printf("l_str = %lu, count = %d\n", l_str, key_node->count);
     }
     

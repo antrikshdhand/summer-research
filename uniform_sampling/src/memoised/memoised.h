@@ -9,7 +9,7 @@
 // Use the print_%_hash_table functions to adjust empirically.
 #define GRAMMAR_TABLE_SIZE 20
 #define KEY_TABLE_SIZE 60 
-#define RULE_TABLE_SIZE 10 
+#define RULE_TABLE_SIZE 30 
 
 #define LENGTH_NA -1
 #define EMPTY_TOKEN 0x88
@@ -24,6 +24,7 @@ typedef struct KeyLengthTuple
 // What we are storing in the HashMaps.
 typedef struct KeyNode KeyNode;
 typedef struct RuleNode RuleNode;
+typedef struct RuleHashTableVal RuleHashTableVal;
 
 struct KeyNode
 {
@@ -43,6 +44,14 @@ struct RuleNode
     struct RuleNode* next;
 };
 
+// Our RuleHashTable values are linked-lists filled with RuleNodes
+struct RuleHashTableVal
+{
+    RuleNode* list;
+    size_t l_str;
+    struct RuleHashTableVal* next;
+};
+
 typedef struct TokenStr
 {
     Token key;
@@ -51,31 +60,9 @@ typedef struct TokenStr
     struct TokenStr* next; // External chaining.
 } TokenStr;
 
-void print_key_node(KeyNode* kn)
-{
-    if (kn == NULL) 
-    {
-        printf("NULL\n");
-        return;
-    }
-    printf("key: 0x%x, l_str: %lu, count: %d\n", kn->token, kn->l_str, kn->count);
-}
-
-void print_rule_node(RuleNode* rn)
-{
-    if (rn == NULL)
-    {
-        printf("NULL\n");
-        return;
-    }
-
-    printf("key: 0x%x, l_str: %lu, count: %d\n", rn->key->token, rn->l_str, rn->count);
-
-}
-
 // Hash table is an array of pointers to structs.
 typedef KeyNode* KeyHashTable[KEY_TABLE_SIZE];
-typedef RuleNode* RuleHashTable[RULE_TABLE_SIZE];
+typedef RuleHashTableVal* RuleHashTable[RULE_TABLE_SIZE];
 typedef TokenStr* GrammarHashTable[GRAMMAR_TABLE_SIZE];
 
 #endif

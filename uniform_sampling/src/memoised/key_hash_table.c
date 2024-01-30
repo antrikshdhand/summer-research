@@ -86,3 +86,13 @@ void breakdown_key_hash_table(KeyHashTable* table)
         free_key_node((*table)[i]);
     }
 }
+
+void print_key_node(KeyNode* kn)
+{
+    if (kn == NULL) 
+    {
+        printf("NULL\n");
+        return;
+    }
+    printf("key: 0x%x, l_str: %lu, count: %d\n", kn->token, kn->l_str, kn->count);
+}
