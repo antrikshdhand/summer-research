@@ -113,26 +113,42 @@ Grammar GRAMMAR = {
 	}
 };
 
+KeyNode* create_key_node(Token key, size_t l_str, int count, RuleNode* rules)
+{
+    KeyNode* kn = malloc(sizeof(KeyNode));
+    kn->token = key;
+    kn->l_str = l_str;
+    kn->count = count;
+    kn->rules = rules;
+    kn->next = NULL;
+
+    return kn;
+}
+
+RuleNode* create_rule_node(KeyNode* key, RuleNode* tail, 
+                            size_t l_str, int count)
+{
+    RuleNode* rn = malloc(sizeof(RuleNode));
+    rn->key = key;
+    rn->tail = tail;
+    rn->l_str = l_str;
+    rn->count = count;
+    rn->next = NULL;
+
+    return rn;
+}
+
 KeyNode* key_get_def(Token key, Grammar* grammar, size_t l_str)
 {
-    // printf("\nEntering key_get_def()\n");
-    // printf("key: 0x%x ", key);
-
     if (get_key(&key_strs, key, l_str) != NULL)
-    {
-        // printf(" --> returning\n");
         return get_key(&key_strs, key, l_str);
-    }
     
     size_t nt_index;
     if ((nt_index = is_non_terminal(key)) != -1)
     {
-        // printf("(non-terminal)\n");
         RuleNode* s = NULL; 
         int count = 0;
         for (size_t i = 0; i < grammar->non_terminals[nt_index].num_rules; i++) {
-            // printf("\nFOR-LOOP ITER: %lu (rule[0] = 0x%x)\n", i, grammar->non_terminals[nt_index].rules[i].tokens[0]);
-
             RuleNode* s_ = rules_get_def(
                 &grammar->non_terminals[nt_index].rules[i], 
                 grammar, 
@@ -147,13 +163,13 @@ KeyNode* key_get_def(Token key, Grammar* grammar, size_t l_str)
                 count += r->count;
             }
 
+            // Append s_ to s.
             if (s == NULL)
             {
                 s = s_;
             }
             else
             { 
-                // Append s_ to the end of s
                 RuleNode* last = s;
                 while (last->next != NULL)
                 {
@@ -161,58 +177,24 @@ KeyNode* key_get_def(Token key, Grammar* grammar, size_t l_str)
                 }
                 last->next = s_;
             }
-
-            // Print s for debug
-            // printf("Printing s\n");
-            // for (RuleNode* r = s; r != NULL; r = r->next) 
-            // {
-            //     print_rule_node(r);
-            // }
         }
 
-        // printf("EXITED FOR-LOOP.\n");
-        
-        KeyNode* kn = malloc(sizeof(KeyNode));
-        kn->token = key;
-        kn->l_str = l_str;
-        kn->count = count;
-        kn->rules = s;
-        kn->next = NULL;
-
-        // printf("Printing kn:\n");
-        // print_key_node(kn);
-
+        KeyNode* kn = create_key_node(key, l_str, count, s);
         insert_key(&key_strs, key, l_str, kn);
         return kn;
     }
     else
     {
         // `key` is a terminal symbol.
-        // printf("(terminal)\n");
-        // printf("l_str = %lu, len(key) = %lu\n", l_str, get_grammar(&grammar_hash, key)->strlen);
-
         if (l_str == get_grammar(&grammar_hash, key)->strlen)
         {
-            // printf("Lengths match\n");
-            KeyNode* kn = malloc(sizeof(KeyNode));
-            kn->token = key;
-            kn->l_str = l_str;
-            kn->count = 1;
-            kn->rules = NULL;
-            kn->next = NULL;
-
+            KeyNode* kn = create_key_node(key, l_str, 1, NULL);
             insert_key(&key_strs, key, l_str, kn);
             return kn;
         }
         else
         {
-            // printf("Lengths do not match\n");
-            KeyNode* empty_key = malloc(sizeof(KeyNode));
-            empty_key->token = EMPTY_TOKEN;
-            empty_key->l_str = 0;
-            empty_key->count = -1;
-            empty_key->rules = NULL;
-            empty_key->next = NULL;
+            KeyNode* empty_key = create_key_node(EMPTY_TOKEN, 0, -1, NULL);
             return empty_key;
         }
     }
@@ -220,19 +202,12 @@ KeyNode* key_get_def(Token key, Grammar* grammar, size_t l_str)
 
 RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
 {
-    // printf("Entering rules_get_def(), l_str = %lu\n", l_str);
     if (rule->num_tokens == 0) 
-    {
-        // printf("rule.num_tokens == 0, returning NULL\n");
         return NULL;
-    }
     
     RuleNode* memoised_result;
     if ((memoised_result = get_rule(&rule_strs, rule, l_str)) != NULL)
-    {
-        printf("memoised entry found! returning...\n");
         return memoised_result;
-    }
 
     // The head is the first non-empty token.
     Token head = EMPTY_TOKEN;
@@ -247,31 +222,18 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
     }
     if (head == EMPTY_TOKEN) return NULL;
 
-    // printf("head: 0x%x ", head);
-
     // If the head is the last token in the array, then there is no tail.
     if (head_index == rule->num_tokens - 1)
     {
-        // printf("(no tail)\n");
         KeyNode* s_ = key_get_def(head, grammar, l_str);
         if (s_->count == -1) 
-        {
-            // printf("count == -1, returning NULL\n");
             return NULL;
-        }
 
-        RuleNode* rn = malloc(sizeof(RuleNode));
-        rn->key = s_;
-        rn->tail = NULL;
-        rn->l_str = l_str;
-        rn->count = s_->count;
-        rn->next = NULL;
-        // printf("Returning from rules_get_def() with rn->key = 0x%x\n\n", rn->key->token);
+        RuleNode* rn = create_rule_node(s_, NULL, l_str, s_->count);
         return rn;
     }
 
-    // printf("(tail = [0x%x, ...])\n", rule.tokens[head_index + 1]);
-
+    // Create a new rule with head_index set to EMPTY_TOKEN.
     Rule* rule_copy = malloc(sizeof(Rule));
     rule_copy->num_tokens = rule->num_tokens;
     for (size_t i = 0; i < rule->num_tokens; i++)
@@ -280,19 +242,19 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
     }
     rule_copy->tokens[head_index] = EMPTY_TOKEN;
 
-    // List of RuleNodes
-    RuleNode* sum_rule = NULL;
+    RuleNode* sum_rule = NULL; // List of RuleNodes
     for (size_t partition = 1; partition <= l_str; partition++)
     {
-        // printf("partition: %lu\n", partition);
         size_t h_len = partition;
         size_t t_len = l_str - partition;
 
         KeyNode* s_in_h = key_get_def(head, grammar, h_len);
-        if (s_in_h->count == -1) continue;
+        if (s_in_h->count == -1) 
+            continue;
 
         RuleNode* s_in_t = rules_get_def(rule_copy, grammar, t_len);
-        if (s_in_t == NULL) continue;
+        if (s_in_t == NULL) 
+            continue;
 
         int count = 0;
         for (RuleNode* r = s_in_t; r != NULL; r = r->next)
@@ -300,15 +262,11 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
             count += s_in_h->count * r->count;
         }
 
-        if (count == 0) continue;
+        if (count == 0) 
+            continue;
 
-        // Create a new RuleNode for the current partition
-        RuleNode* rn = malloc(sizeof(RuleNode));
-        rn->key = s_in_h;
-        rn->tail = s_in_t;
-        rn->l_str = partition;
-        rn->count = count;
-        rn->next = NULL;
+        // Create a new RuleNode for the current partition.
+        RuleNode* rn = create_rule_node(s_in_h, s_in_t, partition, count);
 
         // Append rn to the linked list
         if (sum_rule == NULL)
@@ -326,30 +284,9 @@ RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str)
         }
     }
 
-    // if (sum_rule != NULL) {
-    //     // Print sum_rule
-    //     RuleNode* ptr = sum_rule;
-    //     int i = 0;
-    //     printf("\nPRINTING sum_rule WITH rule->tokens[head_index] = 0x%x, rule->tokens[head_index + 1] = 0x%x\n", rule->tokens[head_index], rule->tokens[head_index + 1]);
-    //     while (ptr != NULL)
-    //     {
-    //         if (ptr->tail == NULL)
-    //         {
-    //             printf("i: %d, count: %d, key->token: 0x%x, key->tail: NULL, l_str: %lu\n", i, ptr->count, ptr->key->token, ptr->l_str);
-    //         }
-    //         else
-    //         {
-    //             printf("i: %d, count: %d, key->token: 0x%x, key->tail->key->token: 0x%x, l_str: %lu\n", i, ptr->count, ptr->key->token, ptr->tail->key->token, ptr->l_str);
-    //         }
-                
-    //         i++;
-    //         ptr = ptr->next;
-    //     }
-    // }
-
+    // Memoise.
     if (sum_rule != NULL)
-        // Memoize the result
-        insert_rule(&rule_strs, rule, l_str, sum_rule);
+        insert_rule(&rule_strs, rule_copy, l_str, sum_rule);
 
     return sum_rule;
 }
