@@ -16,7 +16,7 @@ typedef struct TokenStr
 } TokenStr;
 
 // Our hash table implementation is an array of pointers to TokenStr structs.
-typedef TokenStr* HashTable[TABLE_SIZE];
+typedef TokenStr* HashTable[KEY_TABLE_SIZE];
 
 int hash(Token key);
 void init_hash_table(HashTable* table);

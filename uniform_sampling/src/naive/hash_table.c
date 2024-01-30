@@ -16,13 +16,13 @@ int hash(Token key)
     hash ^= (hash >> 11);
     hash += (hash << 15);
 
-    return hash % TABLE_SIZE;
+    return hash % KEY_TABLE_SIZE;
 }
 
 void init_hash_table(HashTable* table)
 {
     // Set entire table to be empty.
-    for (size_t i = 0; i < TABLE_SIZE; i++)
+    for (size_t i = 0; i < KEY_TABLE_SIZE; i++)
     {
         (*table)[i] = NULL;
     } 
@@ -31,7 +31,7 @@ void init_hash_table(HashTable* table)
 void print_hash_table(HashTable* table)
 {
     printf("-------------------------------\n");
-    for (size_t i = 0; i < TABLE_SIZE; i++)
+    for (size_t i = 0; i < KEY_TABLE_SIZE; i++)
     {
         if ((*table)[i] == NULL)
         {

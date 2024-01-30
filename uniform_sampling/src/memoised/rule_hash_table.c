@@ -2,22 +2,21 @@
 
 int hash_rule(Rule rule, size_t l_str)
 {
-    uint32_t hash = 17;
+    uint32_t hash = 5381;
 
-    // Combine the rule's keys and l_str into the hash
     for (size_t i = 0; i < rule.num_tokens; i++)
     {
-        hash = hash * 31 + rule.tokens[i];
+        hash = ((hash << 5) + hash) + rule.tokens[i];
     }
-    hash = hash * 31 + (uint32_t)l_str;
+    hash = ((hash << 5) + hash) + (uint32_t)l_str;
 
-    return hash % TABLE_SIZE;
+    return hash % RULE_TABLE_SIZE;
 }
 
 void init_rule_hash_table(RuleHashTable* table)
 {
     // Set entire table to be empty.
-    for (size_t i = 0; i < TABLE_SIZE; i++)
+    for (size_t i = 0; i < RULE_TABLE_SIZE; i++)
     {
         (*table)[i] = NULL;
     } 
@@ -25,8 +24,8 @@ void init_rule_hash_table(RuleHashTable* table)
 
 void print_rule_hash_table(RuleHashTable* table)
 {
-    printf("-------------------------------\n");
-    for (size_t i = 0; i < TABLE_SIZE; i++)
+    printf("------------ RULE HASH TABLE --------------\n");
+    for (size_t i = 0; i < RULE_TABLE_SIZE; i++)
     {
         if ((*table)[i] == NULL)
         {
@@ -37,58 +36,70 @@ void print_rule_hash_table(RuleHashTable* table)
             printf("\t%zu\t", i);
             RuleNode* tmp = (*table)[i];
             while (tmp != NULL) {
-                printf("0x%x <len: %lu> -> ", tmp->key->token, tmp->l_str);
+                printf("(0x%x, l: %lu, c: %d) -> ", tmp->key->token, tmp->l_str, tmp->count);
                 tmp = tmp->next;
             }
             printf("\n");
         }
     }
-    printf("-------------------------------\n");
+    printf("--------------------------------------------\n");
 }
 
 void insert_rule(RuleHashTable* table, Rule rule, size_t l_str, RuleNode* rn)
 {
+    if (rn == NULL) return;
+
     int index = hash_rule(rule, l_str);
 
-    // Replace the current start of the linked-list with kn.
-    rn->next = (*table)[index];
+    // Replace the current start of the linked-list with rn.
+    RuleNode* last = rn;
+    while (last->next != NULL)
+    {
+        last = last->next;
+    }
+    last->next = (*table)[index];
     (*table)[index] = rn;
+}
+
+int rule_node_equals(RuleNode* rn, Rule* rule, size_t l_str) 
+{
+    // Check for matching keys and string length:
+    if (rn->key->token != rule->tokens[0] || rn->l_str != l_str) 
+    {
+        return 0; // Not equal
+    }
+    return 1;
 }
 
 RuleNode* get_rule(RuleHashTable* table, Rule rule, size_t l_str)
 {
     int index = hash_rule(rule, l_str);
     RuleNode* tmp = (*table)[index];
-    while (tmp != NULL && (tmp->key->token != rule.tokens[0] && tmp->l_str != l_str))
+    while (tmp != NULL) 
     {
+        if (tmp->l_str == l_str && rule_node_equals(tmp, &rule, l_str)) 
+        {
+            return tmp;
+        }
         tmp = tmp->next;
     }
-    return tmp;
+    return NULL;
 }
 
-RuleNode* delete_rule(RuleHashTable* table, Rule rule, size_t l_str)
+void free_rule_node(RuleNode* rn) 
 {
-    int index = hash_rule(rule, l_str);
-    
-    RuleNode* tmp = (*table)[index];
-    RuleNode* prev = NULL;
-    while (tmp != NULL && tmp->key->token != rule.tokens[0])
-    {
-        prev = tmp;
-        tmp = tmp->next;
+    RuleNode* current = rn;
+    while (current != NULL) {
+        RuleNode* next = current->next;
+        free(current);
+        current = next;
     }
+}
 
-    if (tmp == NULL) return NULL; // No match found.
-
-    if (prev == NULL)
+void breakdown_rule_hash_table(RuleHashTable* table)
+{
+    for (size_t i = 0; i < RULE_TABLE_SIZE; i++)
     {
-        // The node to delete was the head of the linked-list.
-        (*table)[index] = tmp->next;
+        free_rule_node((*table)[i]);
     }
-    else
-    {
-        prev->next = tmp->next;
-    }
-
-    return tmp;
 }

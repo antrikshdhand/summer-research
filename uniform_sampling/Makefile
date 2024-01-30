@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O3 -Wall -Wextra -fsanitize=address -g 
+CFLAGS = -Wall -Wextra -fsanitize=address -g -O1
 EXECUTABLE_C = out/memoised.o
 
 default: ; # Options: make ccomp, make crun, make clean

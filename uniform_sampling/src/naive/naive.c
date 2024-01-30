@@ -1,4 +1,3 @@
-#include "naive.h"
 #include "hash_table.h"
 
 #define EMPTY_TOKEN 0x88
@@ -268,6 +267,7 @@ int main()
      * | 13     | 4     |
      * | 14     | 2     |
      * | 15     | 2     |
+     * | 16     | 1     |
      * 
      */
 
