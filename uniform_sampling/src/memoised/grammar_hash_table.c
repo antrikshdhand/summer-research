@@ -31,7 +31,7 @@ void print_grammar_hash_table(GrammarHashTable* table)
         else
         {
             printf("\t%zu\t", i);
-            TokenStr* tmp = (*table)[i];
+            GrammarHashTableVal* tmp = (*table)[i];
             while (tmp != NULL) {
                 printf("%s -> ", tmp->str);
                 tmp = tmp->next;
@@ -42,7 +42,7 @@ void print_grammar_hash_table(GrammarHashTable* table)
     printf("-----------------------------------------\n");
 }
 
-int insert_grammar(GrammarHashTable* table, TokenStr* ts)
+int insert_grammar(GrammarHashTable* table, GrammarHashTableVal* ts)
 {
     if (ts == NULL) return -1;
     int index = hash(ts->key);
@@ -54,10 +54,10 @@ int insert_grammar(GrammarHashTable* table, TokenStr* ts)
     return 0;
 }
 
-TokenStr* get_grammar(GrammarHashTable* table, Token key)
+GrammarHashTableVal* get_grammar(GrammarHashTable* table, Token key)
 {
     int index = hash(key);
-    TokenStr* tmp = (*table)[index];
+    GrammarHashTableVal* tmp = (*table)[index];
     while (tmp != NULL && tmp->key != key)
     {
         tmp = tmp->next;
@@ -65,12 +65,12 @@ TokenStr* get_grammar(GrammarHashTable* table, Token key)
     return tmp;
 }
 
-TokenStr* delete_grammar(GrammarHashTable* table, Token key)
+GrammarHashTableVal* delete_grammar(GrammarHashTable* table, Token key)
 {
     int index = hash(key);
     
-    TokenStr* tmp = (*table)[index];
-    TokenStr* prev = NULL;
+    GrammarHashTableVal* tmp = (*table)[index];
+    GrammarHashTableVal* prev = NULL;
     while (tmp != NULL && tmp->key != key)
     {
         prev = tmp;
@@ -92,9 +92,9 @@ TokenStr* delete_grammar(GrammarHashTable* table, Token key)
     return tmp;
 }
 
-void free_token_str(TokenStr *token_str) {
+void free_token_str(GrammarHashTableVal *token_str) {
     while (token_str != NULL) {
-        TokenStr *next = token_str->next;
+        GrammarHashTableVal *next = token_str->next;
         free(token_str->str);
         free(token_str);
         token_str = next;
@@ -111,8 +111,8 @@ void breakdown_grammar_hash_table(GrammarHashTable* table)
 void insert_token_str(GrammarHashTable* table, Token key, 
     char* str, int strlen) 
 {
-    TokenStr* ts = malloc(sizeof(TokenStr));
-    *ts = (TokenStr) {key, strdup(str), strlen, NULL};
+    GrammarHashTableVal* ts = malloc(sizeof(GrammarHashTableVal));
+    *ts = (GrammarHashTableVal) {key, strdup(str), strlen, NULL};
     insert_grammar(table, ts);
 }
 

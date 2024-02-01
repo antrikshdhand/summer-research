@@ -15,7 +15,7 @@
 #define EMPTY_TOKEN 0x88
 
 // We hash these to retrieve an index.
-typedef struct KeyLengthTuple
+typedef struct 
 {
     Token key;
     size_t l_str;
@@ -28,8 +28,8 @@ typedef struct RuleHashTableVal RuleHashTableVal;
 
 struct KeyNode
 {
-    Token token; // 8-bit
-    size_t l_str; // length of the string which the 8-bit token represents
+    Token token; 
+    size_t l_str;
     int count;
     RuleNode* rules;
     struct KeyNode* next;
@@ -44,7 +44,7 @@ struct RuleNode
     struct RuleNode* next;
 };
 
-// Our RuleHashTable values are linked-lists filled with RuleNodes
+// Our RuleHashTable values are linked-lists filled with RuleNodes.
 struct RuleHashTableVal
 {
     RuleNode* list;
@@ -52,17 +52,34 @@ struct RuleHashTableVal
     struct RuleHashTableVal* next;
 };
 
-typedef struct TokenStr
+typedef struct GrammarHashTableVal 
 {
     Token key;
     char* str;
     size_t strlen;
-    struct TokenStr* next; // External chaining.
-} TokenStr;
+    struct GrammarHashTableVal* next; // External chaining.
+} GrammarHashTableVal;
+
+// A TokenArray represents a "string"
+typedef struct DynamicTokenArray
+{
+    Token* list;
+    size_t length;
+    struct DynamicTokenArray* next_dta;
+} DynamicTokenArray;
 
 // Hash table is an array of pointers to structs.
 typedef KeyNode* KeyHashTable[KEY_TABLE_SIZE];
 typedef RuleHashTableVal* RuleHashTable[RULE_TABLE_SIZE];
-typedef TokenStr* GrammarHashTable[GRAMMAR_TABLE_SIZE];
+typedef GrammarHashTableVal* GrammarHashTable[GRAMMAR_TABLE_SIZE];
+
+// Function definitions
+KeyNode* key_get_def(Token key, Grammar* grammar, size_t l_str);
+RuleNode* rules_get_def(Rule* rule, Grammar* grammar, size_t l_str);
+int key_get_count(KeyNode* kn);
+int rule_get_count(RuleNode* rn);
+DynamicTokenArray* key_extract_strings(KeyNode* kn);
+DynamicTokenArray* rule_extract_strings(RuleNode* rn);
+
 
 #endif

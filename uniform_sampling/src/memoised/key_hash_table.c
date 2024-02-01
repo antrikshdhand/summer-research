@@ -94,5 +94,13 @@ void print_key_node(KeyNode* kn)
         printf("NULL\n");
         return;
     }
-    printf("key: 0x%x, l_str: %lu, count: %d\n", kn->token, kn->l_str, kn->count);
+
+    if (kn->rules == NULL)
+    {
+        printf("key: 0x%x, l_str: %lu, count: %d\n, rules: NULL", kn->token, kn->l_str, kn->count);
+    }
+    else
+    {
+        printf("key: 0x%x, l_str: %lu, count: %d, rules[0] = 0x%x\n", kn->token, kn->l_str, kn->count, kn->rules[0].key->token);
+    }
 }
