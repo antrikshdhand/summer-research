@@ -80,6 +80,7 @@ int key_get_count(KeyNode* kn);
 int rule_get_count(RuleNode* rn);
 DynamicTokenArray* key_extract_strings(KeyNode* kn);
 DynamicTokenArray* rule_extract_strings(RuleNode* rn);
-
+DynamicTokenArray* key_get_string_at(KeyNode* kn, int at);
+DynamicTokenArray* rule_get_string_at(RuleNode* rn, int at);
 
 #endif

@@ -528,6 +528,77 @@ DynamicTokenArray* rule_extract_strings(RuleNode* rn)
     return valid_strings;
 }
 
+DynamicTokenArray* key_get_string_at(KeyNode* kn, int at)
+{
+    if (at >= kn->count)
+    {
+        printf("`at` should be < KeyNode->count\n");
+        return NULL;
+    }
+
+    if (kn->rules == NULL)
+    {
+        DynamicTokenArray* dta = malloc(sizeof(DynamicTokenArray));
+        dta->length = 1;
+        dta->list = malloc(dta->length * sizeof(Token));
+        dta->list[0] = kn->token;
+        dta->next_dta = NULL;
+        
+        return dta;
+    }
+
+    int at_ = 0;
+    RuleNode* ptr = kn->rules;
+    while (ptr != NULL)
+    {
+        if (at < (at_ + ptr->count))
+        {
+            return rule_get_string_at(ptr, at - at_);
+        }
+        else
+        {
+            at_ += ptr->count;
+        }
+        ptr = ptr->next;
+    }
+
+    return NULL;
+}
+
+DynamicTokenArray* rule_get_string_at(RuleNode* rn, int at)
+{
+    if (at >= rn->count)
+    {
+        printf("`at` should be < RuleNode->count\n");
+        return NULL;
+    }
+
+    if (rn->tail == NULL)
+        return key_get_string_at(rn->key, at);
+
+    int at_ = 0;
+    int len_s_h = rn->key->count;
+    RuleNode* ptr = rn->tail;
+    while (ptr != NULL)
+    {
+        for (int head_idx = 0; head_idx < len_s_h; head_idx++)
+        {
+            if (at < (at_ + ptr->count))
+            {
+                DynamicTokenArray* s_k = key_get_string_at(rn->key, head_idx);
+                return concat_token_arrs(s_k, rule_get_string_at(ptr, at - at_)); 
+            }
+            else
+            {
+                at_ += ptr->count;
+            }
+        }
+        ptr = ptr->next;
+    }
+
+    return NULL;
+}
+
 int main()
 {
     init_key_hash_table(&key_strs);
@@ -536,13 +607,17 @@ int main()
 
     /* MAIN CODE HERE */
 
-    KeyNode* key_node = key_get_def(0x80, &GRAMMAR, 16);
+    KeyNode* key_node = key_get_def(0x80, &GRAMMAR, 11);
 
     // int count = key_extract_strings(key_node);
     // printf("len: %d\n", count);
 
     // DynamicTokenArray* strings = key_extract_strings(key_node);
     // print_list_of_dtas(strings, 1);
+
+    // at is 0-indexed
+    DynamicTokenArray* string = key_get_string_at(key_node, 0);
+    print_dta(string, 1);
     
     /* ***************  */
 
