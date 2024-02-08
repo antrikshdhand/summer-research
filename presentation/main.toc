@@ -1,0 +1,10 @@
+\beamer@sectionintoc {2}{Background}{3}{0}{1}
+\beamer@subsectionintoc {2}{1}{Introduction to GI}{4}{0}{1}
+\beamer@subsectionintoc {2}{2}{Comparison of GI algorithms}{9}{0}{1}
+\beamer@subsectionintoc {2}{3}{Project scope}{13}{0}{1}
+\beamer@sectionintoc {3}{Methodology}{17}{0}{2}
+\beamer@subsectionintoc {3}{1}{Optimising grammar representation}{18}{0}{2}
+\beamer@subsectionintoc {3}{2}{JSON-to-C converter}{22}{0}{2}
+\beamer@subsectionintoc {3}{3}{Implementing UAR sampling}{24}{0}{2}
+\beamer@sectionintoc {4}{Results}{27}{0}{3}
+\beamer@sectionintoc {5}{Conclusion}{33}{0}{4}

@@ -1,0 +1,18 @@
+\frametitle{UAR sampling implementation}
+We utilised \alert{Jenkins' one-at-a-time} hash function to try and obtain a uniform spread of keys in the hash tables and minimise collisions.
+	\begin{small}
+		\begin{verbatim}
+			uint32_t hash = 0;
+
+			for (size_t i = 0; i < 8; ++i) {
+			    hash += key & 1;
+			    hash += (hash << 10);
+			    hash ^= (hash >> 6);
+			    key >>= 1;
+			}
+
+			hash += (hash << 3);
+			hash ^= (hash >> 11);
+			hash += (hash << 15);
+		\end{verbatim}
+	\end{small}

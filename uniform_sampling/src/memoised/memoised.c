@@ -607,17 +607,19 @@ int main()
 
     /* MAIN CODE HERE */
 
+    for (int i = 0; i < 10000000; i++) {
     KeyNode* key_node = key_get_def(0x80, &GRAMMAR, 11);
 
     // int count = key_extract_strings(key_node);
     // printf("len: %d\n", count);
 
     // DynamicTokenArray* strings = key_extract_strings(key_node);
+    }
     // print_list_of_dtas(strings, 1);
 
     // at is 0-indexed
-    DynamicTokenArray* string = key_get_string_at(key_node, 0);
-    print_dta(string, 1);
+    // DynamicTokenArray* string = key_get_string_at(key_node, 0);
+    // print_dta(string, 1);
     
     /* ***************  */
 

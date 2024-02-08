@@ -12,7 +12,7 @@
 
 #define ITERATIONS 10
 #define START_TOKEN 0x80
-// #define TO_PRINT
+#define TO_PRINT
 
 #define MAX_TOKENS_IN_RULE 1024 
 #define MAX_RULES_FOR_NONTERMINAL 1024
